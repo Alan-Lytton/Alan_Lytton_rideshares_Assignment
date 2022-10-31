@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename ='css/style.css')}}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+    <title>Rideshare Dashboard</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+        <div class="container-fluid justify-content-evenly">
+            <a class="navbar-brand" href="/recipes">Ohana Rideshare</a>
+            <div class="navbar-nav align-items-center">
+                <p class="nav-link active me-5" aria-current="page">Welcome {{ session['rider_id'][0]['first_name'] }}
+                </p>
+                <a class="nav-link btn btn-primary text-light me-3" href="/rides/new">Request a Ride</a>
+                <a class="nav-link btn btn-danger text-light" href="/destroy-session">Log Out</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container d-flex">
+        <div class="container">
+            <h3>Rideshare Requests</h3>
+            {% for rider in riders %}
+                {% if rider.details.driver == None %}
+                    <div class="container d-flex flex-column border border-2 border-dark mb-4 me-3 p-3 pb-0">
+                        <div class="container d-flex align-items-center justify-content-between">
+                            <h6>Rider: </h6>
+                            <p>{{ rider.first_name }}</p>
+                        </div>
+                        <div class="container d-flex align-items-center justify-content-between">
+                            <h6>Destination: </h6>
+                            <p>{{ rider.details.details }}</p>
+
+                        </div>
+                        <div class="container d-flex align-items-center justify-content-between">
+                            <h6>When Needed:</h6>
+                            <p>{{ rider.details.scheduled_at.strftime('%b %d') }}</p>
+                        </div>
+                        {% if rider.id == session['rider_id'][0]['id'] %}
+                            <a class="text-end mb-2" href="/rides/delete/{{ rider.details.id }}">DELETE</a>
+                        {% else %}
+                            <a class="text-end mb-2" href="/rides/add/driver/{{ rider.details.id }}/{{ session['rider_id'][0]['id'] }}">I Can Drive!</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="container">
+            <h3>Booked Rideshares</h3>
+            <div class="container d-flex flex-column">
+            {% for rider in riders %}
+                {% if rider.details.driver != None %}
+                    <div class="container d-flex flex-column border border-2 border-dark mb-4 p-3 pb-0">
+                        <div class="container d-flex flex-column align-items-center justify-content-between">
+                            <p><span style="font-weight: bold;">{{ rider.driver[0].driver.first_name }}</span> is driving <span style="font-weight: bold;">{{ rider.first_name }}</span> to {{ rider.details.destination }} on {{ rider.details.scheduled_at.strftime('%b %d') }}</p>
+                        </div>
+                        {% if rider.details.driver == session['rider_id'][0]['id'] %}
+                        <div class="container d-flex justify-content-end">
+                            <a class="text-end me-2 mb-2 btn btn-primary" href="/rides/view/{{ rider.details.id }}">View Details</a>
+                            <a class="text-end ms-2 mb-2 btn btn-danger" href="/rides/cancel/{{ rider.details.id }}">Cancel</a>
+                        {% else %}
+                            <a class="align-self-end me-2 mb-2 btn btn-primary w-25" href="/rides/view/{{ rider.details.id }}">View Details</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
