@@ -63,7 +63,7 @@
                         <div class="container d-flex justify-content-end">
                             <a class="text-end me-2 mb-2 btn btn-primary" href="/rides/view/{{ rider.details.id }}">View Details</a>
                             <a class="text-end ms-2 mb-2 btn btn-danger" href="/rides/cancel/{{ rider.details.id }}">Cancel</a>
-                        {% else %}
+                        {% elif rider.id == session['rider_id'][0]['id'] %}
                             <a class="align-self-end me-2 mb-2 btn btn-primary w-25" href="/rides/view/{{ rider.details.id }}">View Details</a>
                         </div>
                         {% endif %}
