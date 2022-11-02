@@ -8,7 +8,11 @@ bcrypt = Bcrypt(app)
 @app.route("/create_rider", methods = ['POST'])
 def f_register():
     if not Registration.validate_reg(request.form):
+        session['fname'] = request.form['fname']
+        session['lname'] = request.form['lname']
+        session['email'] = request.form['email']
         return redirect("/")
+    session.clear()
     pw_hash = bcrypt.generate_password_hash(request.form['password'])
     data = {
         'fname': request.form['fname'],

@@ -17,7 +17,9 @@ def destroy():
 @app.route('/login', methods = ['POST'])
 def f_login():
     if not Login.validate_login(request.form):
+        session['email2'] = request.form['email']
         return redirect('/')
+    session.clear()
     data = {
         'email': request.form['email']
     }
